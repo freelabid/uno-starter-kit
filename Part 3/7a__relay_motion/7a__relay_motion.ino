@@ -1,0 +1,40 @@
+int relayPin = 2;
+int ledPin = 13;                // choose the pin for the LED
+int inputPin = 3;               // choose the input pin (for PIR sensor)
+int pirState = LOW;             // we start, assuming no motion detected
+int val = 0;                    // variable for reading the pin status
+ 
+void setup() {
+  pinMode(ledPin, OUTPUT);      // declare LED as output
+  pinMode(inputPin, INPUT);     // declare sensor as input
+
+  // initialize digital pin LED_BUILTIN as an output.
+  pinMode(relayPin, OUTPUT);
+ 
+  Serial.begin(9600);
+}
+ 
+void loop(){
+  val = digitalRead(inputPin);  // read input value
+  
+  if (val == HIGH)  // check if the input is HIGH (motion detected)
+  {            
+    digitalWrite(ledPin, HIGH);  // turn LED ON
+    digitalWrite(relayPin, LOW);    // nyalakan RELAY (NO = COM)
+    if (pirState == LOW) // jika sebelumnya memang tidak ada motion, 
+    {
+      Serial.println("Motion detected!"); // print on output change
+      pirState = HIGH; // supaya berikutnya tidak ngeprint lagi
+    }
+  } 
+  else 
+  {
+    digitalWrite(ledPin, LOW); // turn LED OFF
+    digitalWrite(relayPin, HIGH);    // matikan RELAY (NO != COM)  
+    if (pirState == HIGH)
+  {
+      Serial.println("Motion ended!");  // print on output change
+      pirState = LOW;
+    }
+  }
+}
